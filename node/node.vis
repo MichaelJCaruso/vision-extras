@@ -1,2 +1,7 @@
 Utility define: "co" toBePrimitive: 7;
-Utility :co
+String  define: "xo" toBePrimitive: 8;
+Utility :co printNL;
+String  :xo printNL;
+
+^self defineMethod: [ | XO | :xo <- "2300" xo ];
+!xo;
