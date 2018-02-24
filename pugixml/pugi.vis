@@ -1,9 +1,9 @@
 String define: "__asConnectedObject" toBePrimitive: 8;
 String define: "__asDirectoryObject" toBePrimitive: 8 withControlValue: 1;
 
-!xmlParser <- "PugiXML" __asDirectoryObject;
+!xmlParser <- "9876" __asConnectedObject;
 xmlParser isString ifTrue: [
-  :xmlParser <- "9876" __asConnectedObject
+  :xmlParser <- "PugiXML" __asDirectoryObject;
 ];
 
 !xml; !alist; !nodes; !edges;
