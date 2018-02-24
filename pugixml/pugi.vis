@@ -1,13 +1,25 @@
-String define: "__asExtensionObject" toBePrimitive: 8;
+String define: "__asConnectedObject" toBePrimitive: 8;
+String define: "__asDirectoryObject" toBePrimitive: 8 withControlValue: 1;
 
-!xmlParser <- "9876" __asExtensionObject;
-
-!xmlParser <- xmlParser load: "ds/2";
-
-!alist; !nodes; !edges;
-xmlParser firstChild firstChild do: [
-  ^my :alist <- ^self getChild: 0;
-  ^my :nodes <- ^self getChild: 1;
-  ^my :edges <- ^self getChild: 2;
+!xmlParser <- "PugiXML" __asDirectoryObject;
+xmlParser isString ifTrue: [
+  :xmlParser <- "9876" __asConnectedObject
 ];
-alist, nodes, edges do: [getName print: 20; childCount print: -5; attributeCount print: -5; newLine print];
+
+!xml; !alist; !nodes; !edges;
+xmlParser isString ifTrue: [
+  xmlParser
+]. else: [
+  :xml <- xmlParser load: "ds/2";
+  xml firstChild firstChild do: [
+    ^my :alist <- ^self getChild: 0;
+    ^my :nodes <- ^self getChild: 1;
+    ^my :edges <- ^self getChild: 2;
+  ];
+  alist, nodes, edges do: [
+    getName print: 20;
+    childCount print: -5;
+    attributeCount print: -5;
+    newLine print
+  ];
+]

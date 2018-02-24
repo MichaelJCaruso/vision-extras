@@ -1,7 +1,10 @@
 Utility define: "co" toBePrimitive: 7;
 String  define: "xo" toBePrimitive: 8;
+String  define: "xd" toBePrimitive: 8 withControlValue: 1;
 Utility :co printNL;
 String  :xo printNL;
+String  :xd printNL;
 
 ^self defineMethod: [ | XO | :xo <- "2300" xo ];
+^self defineMethod: [ | XD | :xo <- "Default" xd ];
 !xo;
