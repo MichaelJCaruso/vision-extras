@@ -6,5 +6,5 @@ String  :xo printNL;
 String  :xd printNL;
 
 ^self defineMethod: [ | XO | :xo <- "2300" xo ];
-^self defineMethod: [ | XD | :xo <- "Default" xd ];
+^self defineMethod: [ | XD | :xo <- "NodeTest" xd ];
 !xo;
