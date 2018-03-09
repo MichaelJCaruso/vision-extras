@@ -1,0 +1,2 @@
+# export TracingTransportsByPID=true
+export TracingDevices=true
