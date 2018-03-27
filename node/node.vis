@@ -5,12 +5,43 @@ Utility :co printNL;
 String  :xo printNL;
 String  :xd printNL;
 
+################################################################################
+#  NOTE: In the following, 'Object', 'Reflect', 'keys(:)' and 'get(:at:)' are
+#  native javascript properties and functions.
+################
+
+Utility defineMethod: [ | getValueOf: key from: jsObj |
+    jsObj \.global Reflect get: jsObj \.id at: key
+];
+
+####  Returns a javascript array of the keys
+Utility defineMethod: [ | getKeysFrom: jsObj |
+    jsObj \.global :Object keys: jsObj \.id
+];
+
+####  Return a Vision list of the keys (key names)
+Utility defineMethod: [ | getKeyListFrom: jsObj |
+    !jsKeys <- jsObj \.global :Object keys: jsObj \.id;  # jsKeys is a js Array
+    jsKeys length sequence0 send: [
+        ^my getValueOf: ^self from: ^my jsKeys
+    ]
+];
+
+Utility defineMethod: [ | displayKeyValuePairsFrom: jsObj |
+    !keys <- ^self getKeyListFrom: jsObj;
+    keys do: [
+        ^self print: 20;
+        ^my getValueOf: ^self from: ^my jsObj. printNL
+    ];
+];
+
 !blist <- 0, 10.2, -5, 1, 0.0, 17;
 
 Object defineMethod: [ | pump: b for: n |
-    !i <- 0; [i < n] whileTrue: [:i increment print: -3; ^self send: b. printNL]
+    !i <- 0; [i < n] whileTrue: [:i increment print: -6; ^self send: b. printNL]
 ];
 
 ^self defineMethod: [ | XO | :xo <- "2300" xo ];
 ^self defineMethod: [ | XD | :xo <- "NodeTest" xd ];
 !xo;
+
