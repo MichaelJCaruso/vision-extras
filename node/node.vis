@@ -10,28 +10,29 @@ String  :xd printNL;
 #  native javascript properties and functions.
 ################
 
-Utility defineMethod: [ | getValueOf: key from: jsObj |
+Utility defineMethod: [ | get: key from: jsObj |
     jsObj \.global Reflect get: jsObj \.id at: key
 ];
 
-####  Returns a javascript array of the keys
-Utility defineMethod: [ | getKeysFrom: jsObj |
+####  Returns a javascript array of 'jsObj's keys 
+Utility defineMethod: [ | getKeyArrayFrom: jsObj |
     jsObj \.global :Object keys: jsObj \.id
 ];
 
-####  Return a Vision list of the keys (key names)
+####  Returns a Vision list of 'jsObj's keys...
 Utility defineMethod: [ | getKeyListFrom: jsObj |
-    !jsKeys <- jsObj \.global :Object keys: jsObj \.id;  # jsKeys is a js Array
+    !jsKeys <- ^self getKeyArrayFrom: jsObj;
     jsKeys length sequence0 send: [
-        ^my getValueOf: ^self from: ^my jsKeys
+        ^my get: ^self from: ^my jsKeys
     ]
 ];
 
-Utility defineMethod: [ | displayKeyValuePairsFrom: jsObj |
+Utility defineMethod: [ | display: jsObj |
+    !self <- ^self;
     !keys <- ^self getKeyListFrom: jsObj;
     keys do: [
         ^self print: 20;
-        ^my getValueOf: ^self from: ^my jsObj. printNL
+        ^my self get: ^self from: ^my jsObj. printNL
     ];
 ];
 
