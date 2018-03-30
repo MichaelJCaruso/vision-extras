@@ -1,48 +1,59 @@
-Utility define: "co" toBePrimitive: 7;
-String  define: "xo" toBePrimitive: 8;
-String  define: "xd" toBePrimitive: 8 withControlValue: 1;
-Utility :co printNL;
-String  :xo printNL;
-String  :xd printNL;
+CoreWorkspace respondsTo: "JS". ifFalse: [
+    ToolKit createSubclass: "JS" at: CoreWorkspace;
+];
+
+JS define: "co" toBePrimitive: 7;
+JS :co printNL;
+
+String define: "xo" toBePrimitive: 8;
+String define: "xd" toBePrimitive: 8 withControlValue: 1;
+String :xo printNL;
+String :xd printNL;
 
 ################################################################################
 #  NOTE: In the following, 'Object', 'Reflect', 'keys(:)' and 'get(:at:)' are
 #  native javascript properties and functions.
 ################
 
-Utility defineMethod: [ | get: key from: jsObj |
+JS defineMethod: [ | get: key from: jsObj |
     jsObj \.global Reflect get: jsObj \.id at: key
 ];
 
 ####  Returns a javascript array of 'jsObj's keys 
-Utility defineMethod: [ | getKeyArrayFrom: jsObj |
+JS defineMethod: [ | getJSKeysFrom: jsObj |
     jsObj \.global :Object keys: jsObj \.id
 ];
 
 ####  Returns a Vision list of 'jsObj's keys...
-Utility defineMethod: [ | getKeyListFrom: jsObj |
-    !jsKeys <- ^self getKeyArrayFrom: jsObj;
+JS defineMethod: [ | getKeysFrom: jsObj |
+    !jsKeys <- ^self getJSKeysFrom: jsObj;
     jsKeys length sequence0 send: [
         ^my get: ^self from: ^my jsKeys
     ]
 ];
 
-Utility defineMethod: [ | display: jsObj |
+####  Returns a Vision list of 'jsObj's keys...
+JS defineMethod: [ | getPropertyMapFrom: jsObj |
     !self <- ^self;
-    !keys <- ^self getKeyListFrom: jsObj;
-    keys do: [
+    ^self getKeysFrom: jsObj. extendBy: [
+        !keyValue <- ^my self get: ^self from: ^my jsObj
+    ]
+];
+
+JS defineMethod: [ | displayProperties: jsObj |
+    ^self getPropertyMapFrom: jsObj. do: [
         ^self print: 20;
-        ^my self get: ^self from: ^my jsObj. printNL
+        keyValue printNL
     ];
 ];
 
-!blist <- 0, 10.2, -5, 1, 0.0, 17;
-
-Object defineMethod: [ | pump: b for: n |
-    !i <- 0; [i < n] whileTrue: [:i increment print: -6; ^self send: b. printNL]
-];
-
+################
 ^self defineMethod: [ | XO | :xo <- "2300" xo ];
 ^self defineMethod: [ | XD | :xo <- "NodeTest" xd ];
 !xo;
+
+################
+Object defineMethod: [ | pump: b for: n |
+    !i <- 0; [i < n] whileTrue: [:i increment print: -6; ^self send: b. printNL]
+];
 
