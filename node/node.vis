@@ -45,10 +45,11 @@ JS defineMethod: [ | jsGlobal | ^self jsObject \.global ];
 ####  Array creation
 JS defineMethod: [ | newArray | ^self object: ^self jsGlobal Array ];
 JS defineMethod: [ | newArray: nElements | ^self object: (^self jsGlobal Array: nElements) ];
+JS defineMethod: [ | newArray: nElements | ^self object: (^self jsGlobal Array: nElements) ];
 JS defineMethod: [ | newArrayFrom: list |
     !newArray <- ^self newArray: list count;
     list numberElements do: [
-        ^my newArray set: (position - 1) asInteger to: ^self asSelf
+        ^my newArray set: (position - 1) asInteger to: ^self
     ];
     newArray
 ];
@@ -79,8 +80,26 @@ JS defineMethod: [ | set: key to: value |
     ^self set: key of: ^self jsObject to: value;
     ^self
 ];
+
+####
+JS defineMethod: [ | set: key toArrayFrom: list |
+   ^self set: key to: (^self newArrayFrom: list)
+];
+
 JS defineMethod: [ | set: key of: jsObj to: value |
-    jsObj \.global Reflect set: jsObj \.id key: key to: value \.id
+#>>>>>>>>>>>>>>>>
+#  This should be:
+#
+#   jsObj \.global Reflect set: jsObj \.id key: key to: value \.id
+#
+#  but, since batchvision's current adapter implementation doesn't
+#  support polymorphic (un-clustered) parameters, it must be:
+
+    value basicSend: [
+        ^my jsObj \.global Reflect set: ^my jsObj \.id key: ^my key to: ^self \.id
+    ]
+
+#<<<<<<<<<<<<<<<<
 ];
 
 ################
@@ -144,3 +163,27 @@ Object defineMethod: [ | pump: b for: n |
     !i <- 0; [i < n] whileTrue: [:i increment print: -6; ^self send: b. printNL]
 ];
 
+
+################
+################
+################
+JS defineMethod: [ | set: name toEntityGroups: groups |
+  !jsenv <- ^self;
+  ^self set: name toArrayFrom: (
+    groups send: [
+      !jsenv <- ^my jsenv;
+      jsenv newObject
+        set: "name" to: ^self name.
+        set: "constituents" toArrayFrom: (
+          groupList send: [
+            ^my jsenv newObject
+              set: "code" to: ^self code.
+              set: "name" to: ^self name
+          ]
+        )
+    ]
+  )
+];
+################
+################
+################
