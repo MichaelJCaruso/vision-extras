@@ -7,10 +7,10 @@ CoreWorkspace respondsTo: "JS". ifFalse: [
 ####  Parameter Conversion Helpers...
 ####
 JS defineMethod: [ | \.id | ^self jsObject \.id];
-Double  defineMethod: [ | \.id | ^self ];
-Float   defineMethod: [ | \.id | ^self ];
-Integer defineMethod: [ | \.id | ^self ];
-String  defineMethod: [ | \.id | ^self ];
+Double  defineMethod: [ | \.id | ^self asSelf ];
+Float   defineMethod: [ | \.id | ^self asSelf ];
+Integer defineMethod: [ | \.id | ^self asSelf ];
+String  defineMethod: [ | \.id | ^self asSelf ];
 
 ################################################################################
 #  NOTE: In the following, 'Object', 'Reflect', 'keys(:)' and 'get(:at:)' are
@@ -44,7 +44,6 @@ JS defineMethod: [ | jsGlobal | ^self jsObject \.global ];
 ################
 ####  Array creation
 JS defineMethod: [ | newArray | ^self object: ^self jsGlobal Array ];
-JS defineMethod: [ | newArray: nElements | ^self object: (^self jsGlobal Array: nElements) ];
 JS defineMethod: [ | newArray: nElements | ^self object: (^self jsGlobal Array: nElements) ];
 JS defineMethod: [ | newArrayFrom: list |
     !newArray <- ^self newArray: list count;
@@ -94,7 +93,6 @@ JS defineMethod: [ | set: key of: jsObj to: value |
 #
 #  but, since batchvision's current adapter implementation doesn't
 #  support polymorphic (un-clustered) parameters, it must be:
-
     value basicSend: [
         ^my jsObj \.global Reflect set: ^my jsObj \.id key: ^my key to: ^self \.id
     ]
