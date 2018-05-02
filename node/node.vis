@@ -42,6 +42,10 @@ JS defineMethod: [ | global |
 JS defineMethod: [ | jsGlobal | ^self jsObject \.global ];
 
 ################
+####  Return the current jsObject's parameter identity...
+JS defineMethod: [ | jsParam | ^self jsObject \.id ];
+
+################
 ####  Array creation
 JS defineMethod: [ | newArray | ^self object: ^self jsGlobal Array ];
 JS defineMethod: [ | newArray: nElements | ^self object: (^self jsGlobal Array: nElements) ];
