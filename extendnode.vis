@@ -1,0 +1,110 @@
+####################
+#  extensions to the JS class to support passing js objects containing parameters
+#    and returning js objects containing resultant data
+####################
+
+JS createSubclass: "Query" at: JS ;
+
+
+#--------------------
+#  runQuery: inputObject
+#    provides a js object containing name/value pairs of inputs and returns
+#       a js object with results
+#
+#  inputObject:   includes 'appName'  - name of method defined at Query class to run
+#                 additional names that return input values needed within calling method
+#
+#  returns
+#     js object that includes 'errorStatus' - 0 -> no error; 1 -> warnings ; 2 -> fatal error
+#                             'errorString'
+#
+#--------------------
+
+JS defineMethod: [ | runQuery  |
+!inputObject <- ^self jsObject request body inputObject ;
+!returnObject <- ^self newObject
+    set: "errorStatus" to: 0 .
+    set: "errorString" to: "" .
+;
+
+!env <- Query extendBy:
+     [ !inputObject <- ^my inputObject ;
+       !returnObject <- ^my returnObject ;
+     ] ;
+
+
+!queryName <- env getQueryName ;
+
+queryName isntDefault
+  ifTrue:
+    [ env send: queryName asBlock ;
+    ] ;
+
+^global define: 'co' toBe: ^self jsObject ;
+^global define: 'ro' toBe: returnObject  ;
+
+^self jsObject returnJSON: returnObject jsParam
+
+] ;
+
+
+JS Query defineMethod: [ | getQueryName |
+!string <- ^self inputObject queryName ;
+!query <- NA ;
+string isString
+ifTrue:
+   [ ^self respondsTo: string .    #- make this case-insenstive
+        ifTrue: [ :query <- string ]
+          else: [ ^self setErrorTo: "Query Name Not Found" ]
+   ] 
+ifFalse:
+   [ ^self setErrorTo: "No queryName Supplied." ;
+   ] ;
+query          
+
+] ;
+
+
+JS Query defineMethod: [ | setErrorTo: text |
+
+^self returnObject set: "errorStatus" to: 2 ;
+^self returnObject set: "errorString" to: text ;
+^self
+
+] ;
+
+JS Query defineMethod: [ | setWarningTo: text |
+
+^self returnObject set: "errorStatus" to: 1 ;
+^self returnObject set: "errorString" to: text ;
+^self
+
+] ;
+
+JS Query defineMethod: [ | testit |
+!input <- ^self inputObject x ;
+^self returnObject
+   set: "title" to: "it worked" .
+   set: "testValue" to: ("the answer is " concat: input) ;
+^self
+] ;
+
+#-----------
+
+JS Query defineMethod: [ | mikey |
+!retrieveCount <- ^self inputObject retrieveCount increment: 10 ;
+!data <- GlobalWorkspace Security masterList
+       groupedBy: [industry].
+          select: [isntDefault].
+        sortDown: [groupList count].
+           first: retrieveCount ;
+
+^self returnObject
+       set: "title" to: ("retriving first " concat: retrieveCount) .
+       set: "labels" toArrayFrom: (data send: [name]).
+       set: "series" toArrayFrom: (data send: [groupList count]);
+] ;
+
+#----------------------------------------
+
+
