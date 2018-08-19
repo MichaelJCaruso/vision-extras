@@ -1,3 +1,7 @@
+Account findId: "sp50" . setCodeTo: "RGN1" . setNameTo: "Rich's Growth Fund" ;
+Account findId: "spsup" . setCodeTo: "RGN2" . setNameTo: "Rich's Income Fund" ;
+Account findId: "sml" . setCodeTo: "RGN3" . setNameTo: "Rich's Retirement Fund" ;
+
 ####################
 #  extensions to the JS class to support passing js objects containing parameters
 #    and returning js objects containing resultant data
